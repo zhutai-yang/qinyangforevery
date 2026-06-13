@@ -73,12 +73,23 @@ docker/mysql/init/      # Compose 首次初始化
 # 1. 安装 Docker 后克隆仓库
 git clone <repo> && cd 赛事记录
 
-# 2. 一键部署（含 2G swap、生成 .env、HTTP 80）
+# 2. （推荐）配置 Docker 镜像加速 — 国内 ECS 拉 Docker Hub 常超时
+#    控制台 https://cr.console.aliyun.com/ → 镜像工具 → 镜像加速器 → 复制专属地址
+sudo tee /etc/docker/daemon.json <<'EOF'
+{
+  "registry-mirrors": ["https://<你的ID>.mirror.aliyuncs.com", "https://docker.m.daocloud.io"]
+}
+EOF
+sudo systemctl restart docker
+
+# 3. 一键部署（含 2G swap、生成 .env、HTTP 80、预拉基础镜像）
 make up-ecs
 
-# 3. 控制台安全组：入方向放行 TCP 22、80
-# 4. 浏览器访问 http://<公网IP>/ 与 /admin/
+# 4. 控制台安全组：入方向放行 TCP 22、80
+# 5. 浏览器访问 http://<公网IP>/ 与 /admin/
 ```
+
+若仍无法访问 Docker Hub，可单独预拉：`bash scripts/ecs-prefetch-images.sh`（经 DaoCloud 前缀拉取并打回原 tag）。
 
 MySQL / RabbitMQ / API 端口仅绑定 `127.0.0.1`，公网只经 Nginx 80 进入。首次构建约 10–20 分钟；内存不足时 `scripts/ecs-bootstrap.sh` 会创建 swap。
 
@@ -115,6 +126,7 @@ Docker 服务名：`tt-admin-api`（Nginx 反代 `/api/`）
 - 规划总纲：[`乒乓球赛事管理系统（TT）整体规划/e-切片规划与里程碑.md`](乒乓球赛事管理系统（TT）整体规划/e-切片规划与里程碑.md)
 - Skills 入口：[`CLAUDE.md`](CLAUDE.md)
 - 本地环境：[`g-参考文档/本地开发环境搭建指南.md`](乒乓球赛事管理系统（TT）整体规划/g-参考文档/本地开发环境搭建指南.md)
+- 阿里云 ECS：[`g-参考文档/阿里云ECS部署指南.md`](乒乓球赛事管理系统（TT）整体规划/g-参考文档/阿里云ECS部署指南.md)
 
 ## 环境变量（`.env.example`）
 

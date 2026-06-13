@@ -17,6 +17,9 @@ if [[ ! -f .env ]]; then
   exit 1
 fi
 
+echo "==> 预拉 Docker Hub 基础镜像（国内 ECS 必需）..."
+bash scripts/ecs-prefetch-images.sh
+
 echo "==> 构建并启动（首次约 10–20 分钟）..."
 "${COMPOSE[@]}" up -d --build
 
