@@ -182,22 +182,56 @@ cd /root/qinyangforevery
 bash scripts/setup-github-deploy-key.sh
 ```
 
-复制输出的 **私钥全文**。
+复制输出的 **私钥全文**（见下方「私钥粘贴规范」）。
 
 **GitHub 上**：仓库 → **Settings** → **Secrets and variables** → **Actions**：
 
-| Secret | 值 |
-|--------|-----|
-| `ECS_HOST` | ECS 公网 IP |
-| `ECS_USER` | `root` |
-| `ECS_SSH_KEY` | 私钥全文 |
-| `ECS_PORT` | `22`（可选） |
-| `ECS_APP_DIR` | `/root/qinyangforevery`（可选） |
+| Secret | 值 | 常见错误 |
+|--------|-----|----------|
+| `ECS_HOST` | ECS 公网 IP（如 `8.136.148.178`） | 带了 `http://` 或末尾空格 |
+| `ECS_USER` | `root` | 写成 `ubuntu` 等 |
+| `ECS_SSH_KEY` | **私钥全文** | 见下方规范 |
+| `ECS_PORT` | `22`（可选） | — |
+| `ECS_APP_DIR` | `/root/qinyangforevery`（可选） | — |
+
+**私钥粘贴规范（`ECS_SSH_KEY`）**：
+
+```bash
+# ECS 上查看完整私钥
+cat /root/.ssh/github_actions_deploy
+```
+
+- 必须从 `-----BEGIN OPENSSH PRIVATE KEY-----` 到 `-----END OPENSSH PRIVATE KEY-----` **整段复制**
+- 粘贴的是 **私钥**，不是 `.pub` 公钥
+- 不要少复制 BEGIN/END 行，不要多空行或截断中间内容
+- 私钥只存 GitHub Secret，**不要发到聊天/截图**
+
+Secret 名称必须严格为 `ECS_HOST`、`ECS_USER`、`ECS_SSH_KEY`（与 workflow 一致）。
 
 ### 4.2 触发方式
-
 - 自动：`push` 到 `main` 且 CI 绿了之后触发 `.github/workflows/deploy.yml`
 - 手动：Actions → **CD — Deploy to Aliyun ECS** → **Run workflow**
+
+> 配好 Secret 后需 **重新 Run workflow**；之前失败的 run 不会自动重试。
+
+### 4.3 GitHub Actions 踩坑（已验证）
+
+| 现象 | 原因 | 处理 |
+|------|------|------|
+| `can't connect without a private SSH key or password` | 未配 Secret，或 `ECS_SSH_KEY` 为空 | 添加三个 Secret 后重新 Run workflow |
+| 同上，Secret 已配仍失败 | `ECS_SSH_KEY` **不完整**（缺 `BEGIN` 行或截断） | `cat ~/.ssh/github_actions_deploy` 整段重贴 |
+| 误贴公钥 | 复制了 `.pub` 文件 | 必须贴 **无 `.pub` 后缀** 的私钥文件 |
+| Secret 名写错 | 如 `SSH_KEY`、`ECS_SSH` | 必须：`ECS_HOST` / `ECS_USER` / `ECS_SSH_KEY` |
+| Deploy 在配 Secret 之前已跑 | 旧 run 必然失败 | Actions 页手动 **Run workflow** |
+| `目录 ... 不是 git 仓库` | ECS 未 clone 或未 `make up-ecs` | 先完成 §3.7 首次部署 |
+| SSH 连不上 | 安全组未开 22；实例已停 | 检查安全组与实例状态 |
+
+**验证 Secret 是否生效的检查顺序**：
+
+1. GitHub Secrets 三个都已填 → Edit 确认 `ECS_SSH_KEY` 含 BEGIN/END
+2. ECS：`grep github-actions-deploy ~/.ssh/authorized_keys` 有输出
+3. ECS：`ls /root/qinyangforevery/.git` 存在
+4. Actions → **Run workflow**（不是重跑旧 commit 前的失败记录也行，但要新触发一次）
 
 ---
 
@@ -232,21 +266,69 @@ make up-ecs
 
 ---
 
-## 六、本次搭建遇到的问题汇总
+## 六、踩坑指南（全量）
 
-| # | 问题 | 解决方案 |
-|---|------|----------|
-| 1 | 初始系统为 **Windows Server** | 停止实例 → 更换操作系统 → **Ubuntu 22.04** |
-| 2 | 安全组「访问来源」填成 `22.0.0.0/9` | 应填 `0.0.0.0/0`（来源是 IP，不是端口） |
-| 3 | `get.docker.com` 安装 Docker 失败 | 改用 `apt install docker.io docker-compose-v2` |
-| 4 | `docker.service does not exist` | Docker 未装上，先完成 #3 |
-| 5 | Git clone 403 / 要用户名 | 仓库私有 → 改 **Public** 或配 Token/SSH |
-| 6 | clone URL 缺少 `zhutai-yang/` | 完整路径：`zhutai-yang/qinyangforevery` |
-| 7 | 把 Token URL 直接粘贴到 bash | 需完整命令：`git clone https://...` |
-| 8 | `make: No rule to make target 'up-ecs'` | 未 clone 成功或未 `cd` 进项目目录 |
-| 9 | 2G 内存构建 OOM | 项目 `make up-ecs` 已含 swap + JVM/MySQL 调优 |
-| 10 | Token 泄露在聊天/截图 | 立即到 GitHub **Revoke**，重新生成 |
-| 11 | `docker pull` / build 超时 | 配置阿里云镜像加速 + `ecs-prefetch-images.sh` |
+按部署阶段分类，均为本次试用 ECS 搭建中 **实际遇到过** 的问题。
+
+### 6.1 阿里云控制台
+
+| # | 坑 | 正确做法 |
+|---|-----|----------|
+| 1 | 试用机默认 **Windows Server** | 停止 → 更换操作系统 → **Ubuntu 22.04** |
+| 2 | 安全组「访问来源」填 `22.0.0.0/9` | 来源是 **IP 网段**，不是端口；试用填 `0.0.0.0/0` |
+| 3 | 只开 80 没开 22 | Workbench / GitHub Deploy 都需要 **22** |
+| 4 | 对公网开了 3306/8096 | 不必开；compose 已绑 `127.0.0.1` |
+
+### 6.2 ECS 环境与 Docker
+
+| # | 坑 | 正确做法 |
+|---|-----|----------|
+| 5 | `curl get.docker.com` → `SSL_connect: Connection reset` | `apt install docker.io docker-compose-v2` |
+| 6 | `docker.service does not exist` | 上一条 Docker 没装上 |
+| 7 | `docker pull` / build **i/o timeout** | 配 [镜像加速器](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) + `ecs-prefetch-images.sh` |
+| 8 | 2G 内存 build 被 **killed** | `make up-ecs` 自动 swap；看 `free -h` |
+
+### 6.3 Git 拉代码
+
+| # | 坑 | 正确做法 |
+|---|-----|----------|
+| 9 | 私有仓库 **403** / `Write access not granted` | 改 **Public**，或 Classic PAT 勾 `repo` |
+| 10 | URL 写成 `github.com/qinyangforevery` | 必须含用户名：`zhutai-yang/qinyangforevery` |
+| 11 | 把 clone URL **单独粘贴**到 bash | 要完整命令：`git clone https://...` |
+| 12 | HTTPS / SSH 格式混用 | HTTPS 用 `/`；SSH 用 `git@github.com:用户/仓库.git` |
+| 13 | Fine-grained PAT 仍 403 | 仓库授权未勾选，或换 Classic PAT |
+| 14 | Token 贴到聊天 / 截图 | 立即 **Revoke**，重新生成 |
+
+### 6.4 项目部署
+
+| # | 坑 | 正确做法 |
+|---|-----|----------|
+| 15 | `make: No rule to make target 'up-ecs'` | clone 失败或未 `cd` 进项目目录 |
+| 16 | 页面 502 | API 还在 build，等 `docker compose logs -f tt-admin-api` |
+| 17 | `.env` 仍用默认密码 | 部署后改 `ADMIN_INITIAL_PASSWORD` 等 |
+
+### 6.5 GitHub Actions 自动部署
+
+| # | 坑 | 正确做法 |
+|---|-----|----------|
+| 18 | `can't connect without a private SSH key or password` | 配齐 `ECS_HOST` / `ECS_USER` / `ECS_SSH_KEY` |
+| 19 | Secret 有了仍连不上 | **`ECS_SSH_KEY` 不完整**（缺 `-----BEGIN...` 行）→ 整段重贴 |
+| 20 | 贴了 `.pub` 公钥 | 必须贴私钥：`cat ~/.ssh/github_actions_deploy` |
+| 21 | 配 Secret 前的失败 run | 配好后 Actions 页 **Run workflow** 重新触发 |
+| 22 | ECS 无 `/root/qinyangforevery/.git` | 先手动完成首次 `git clone` + `make up-ecs` |
+
+### 6.6 速查：一眼判断问题在哪
+
+```
+连不上 ECS Workbench     → 安全组 22、root 密码
+git clone 403            → 仓库改 Public
+docker 装不上            → 别用 get.docker.com，用 apt
+docker pull 超时         → 镜像加速 + prefetch 脚本
+make up-ecs 找不到       → 没 clone 成功
+网站 502                 → 等 API healthy
+Actions 没 SSH key       → 补 Secret
+Actions Secret 有仍失败  → 私钥缺 BEGIN/END，整段重贴
+```
 
 ---
 
@@ -276,6 +358,8 @@ make up-ecs
 | 构建 killed | `free -h` 看内存；确认 swap 已创建 |
 | `git pull` 失败 | 网络；或仓库权限 |
 | `docker pull` 超时 / `i/o timeout` | 配置 `/etc/docker/daemon.json` 镜像加速；`bash scripts/ecs-prefetch-images.sh` |
+| Actions `can't connect without a private SSH key` | 补全三个 Secret；见 [§4.3](#43-github-actions-踩坑已验证) |
+| Actions Secret 有但仍 SSH 失败 | `ECS_SSH_KEY` 缺 BEGIN/END → 整段重贴私钥 |
 
 常用命令：
 
@@ -297,6 +381,7 @@ free -h && swapon --show
 | HTTPS | 可暂用 HTTP | 域名备案 + SSL（443） |
 | 备份 | 手动 mysqldump + uploads 卷 | 定时快照 / RDS |
 | GitHub Token | 勿提交、勿贴聊天 | 泄露立即 Revoke |
+| `ECS_SSH_KEY` | 整段私钥存 Secret | 缺 BEGIN 行会导致 Deploy 失败 |
 
 备份示例：
 
@@ -340,3 +425,4 @@ bash scripts/setup-github-deploy-key.sh
 | 日期 | 说明 |
 |------|------|
 | 2026-06-13 | 初版：试用 ECS 搭建流程、问题汇总、GitHub Actions CD |
+| 2026-06-13 | 补充踩坑指南 §6：GitHub Actions SSH 私钥 BEGIN/END、Secret 配置 |
