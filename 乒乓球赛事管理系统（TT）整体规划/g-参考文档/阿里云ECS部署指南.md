@@ -259,6 +259,7 @@ make up-ecs
 | `tt-admin-api/Dockerfile` | JVM `-Xms256m -Xmx512m` |
 | `scripts/ecs-bootstrap.sh` | swap + `.env` 初始化 |
 | `scripts/ecs-deploy.sh` | 一键部署入口 |
+| `scripts/ecs-prefetch-images.sh` | 国内 ECS 预拉 Docker Hub 基础镜像 |
 | `scripts/setup-github-deploy-key.sh` | GitHub Actions SSH 密钥 |
 | `.github/workflows/deploy.yml` | 自动部署 workflow |
 | `Makefile` | `make up-ecs` |
@@ -274,6 +275,7 @@ make up-ecs
 | Workbench 连不上 | 安全组 22；root 密码是否正确 |
 | 构建 killed | `free -h` 看内存；确认 swap 已创建 |
 | `git pull` 失败 | 网络；或仓库权限 |
+| `docker pull` 超时 / `i/o timeout` | 配置 `/etc/docker/daemon.json` 镜像加速；`bash scripts/ecs-prefetch-images.sh` |
 
 常用命令：
 
@@ -310,6 +312,14 @@ docker exec tt-mysql mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" tt_event > backu
 # === ECS Workbench 一次性部署 ===
 apt update && apt install -y docker.io docker-compose-v2 git
 systemctl enable docker && systemctl start docker
+
+# 镜像加速（<你的ID> 换为阿里云加速器地址）
+sudo tee /etc/docker/daemon.json <<'EOF'
+{
+  "registry-mirrors": ["https://<你的ID>.mirror.aliyuncs.com", "https://docker.m.daocloud.io"]
+}
+EOF
+sudo systemctl restart docker
 
 git clone https://github.com/zhutai-yang/qinyangforevery.git
 cd qinyangforevery
