@@ -9,7 +9,7 @@ spring:
     hikari:
       pool-name: TTHikariCP-Prod
       minimum-idle: 5
-      maximum-pool-size: 20
+      maximum-pool-size: 10
 
   rabbitmq:
     host: ${RABBITMQ_HOST:rabbitmq}

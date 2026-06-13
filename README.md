@@ -63,7 +63,23 @@ docker/mysql/init/      # Compose 首次初始化
 |------|------|
 | 本地 | `DB_*` 环境变量 + `mvn spring-boot:run` |
 | Docker | `docker compose` → mysql + rabbitmq + tt-admin-api + nginx |
+| 阿里云 ECS | `make up-ecs`（2G 小机：swap + JVM/MySQL 调优 + 80 端口） |
 | CI | `.github/workflows/ci.yml` |
+
+### 阿里云试用 ECS（3 个月免费机）
+
+```bash
+# 1. 安装 Docker 后克隆仓库
+git clone <repo> && cd 赛事记录
+
+# 2. 一键部署（含 2G swap、生成 .env、HTTP 80）
+make up-ecs
+
+# 3. 控制台安全组：入方向放行 TCP 22、80
+# 4. 浏览器访问 http://<公网IP>/ 与 /admin/
+```
+
+MySQL / RabbitMQ / API 端口仅绑定 `127.0.0.1`，公网只经 Nginx 80 进入。首次构建约 10–20 分钟；内存不足时 `scripts/ecs-bootstrap.sh` 会创建 swap。
 
 Docker 服务名：`tt-admin-api`（Nginx 反代 `/api/`）
 

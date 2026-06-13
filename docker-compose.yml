@@ -27,8 +27,9 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./docker/mysql/init/02-data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+      - ./docker/mysql/conf.d/small-instance.cnf:/etc/mysql/conf.d/zz-small.cnf:ro
     ports:
-      - "${MYSQL_PORT:-3307}:3306"
+      - "127.0.0.1:${MYSQL_PORT:-3307}:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-ttdevroot}"]
       interval: 10s
@@ -44,8 +45,8 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-tt}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-ttsecret}
     ports:
-      - "${RABBITMQ_PORT:-5673}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
+      - "127.0.0.1:${RABBITMQ_PORT:-5673}:5672"
+      - "127.0.0.1:${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -84,7 +85,7 @@ services:
     volumes:
       - uploads_data:/data/uploads
     ports:
-      - "${API_PORT:-8096}:8096"
+      - "127.0.0.1:${API_PORT:-8096}:8096"
     expose:
       - "8096"
     healthcheck:

@@ -1,0 +1,8 @@
+# 2G 内存小机（如阿里云试用 ECS）MySQL 调优
+[mysqld]
+innodb_buffer_pool_size=128M
+innodb_log_buffer_size=8M
+innodb_flush_log_at_trx_commit=2
+max_connections=50
+performance_schema=OFF
+table_open_cache=200

@@ -1,10 +1,11 @@
 # TT 本地启动（对齐 IMP：docker compose up）
-.PHONY: help env up down logs ps rebuild api infra
+.PHONY: help env up down logs ps rebuild api infra up-ecs ecs-bootstrap
 
 help:
 	@echo "用法（在仓库根目录）："
 	@echo "  make env      复制 .env.example → .env（首次必做）"
 	@echo "  make up       Docker 全栈：mysql + rabbitmq + api + nginx"
+	@echo "  make up-ecs   阿里云 ECS：swap + .env + 80 端口公网部署"
 	@echo "  make infra    仅 mysql + rabbitmq（本地 mvn / vite 时用）"
 	@echo "  make api      infra + mvn spring-boot:run"
 	@echo "  make down     停止容器"
@@ -16,6 +17,12 @@ env:
 
 up: env
 	docker compose up -d --build
+
+up-ecs:
+	bash scripts/ecs-deploy.sh
+
+ecs-bootstrap:
+	bash scripts/ecs-bootstrap.sh
 
 rebuild: env
 	docker compose up -d --build --force-recreate

@@ -18,6 +18,8 @@ ENV TZ=Asia/Shanghai \
     SPRING_PROFILES_ACTIVE=prod \
     SERVER_PORT=8096
 ENTRYPOINT ["java", \
+  "-Xms256m", \
+  "-Xmx512m", \
   "-Djava.security.egd=file:/dev/./urandom", \
   "-Dfile.encoding=UTF-8", \
   "-jar", "/app/app.jar"]

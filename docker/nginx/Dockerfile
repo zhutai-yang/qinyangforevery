@@ -9,5 +9,5 @@ RUN npm run build:all
 
 FROM nginx:1.25-alpine
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=frontend /build/client/dist/portal/ /usr/share/nginx/html/
-COPY --from=frontend /build/client/dist/admin/ /usr/share/nginx/html/admin/
+COPY --from=frontend /build/dist/portal/ /usr/share/nginx/html/
+COPY --from=frontend /build/dist/admin/ /usr/share/nginx/html/admin/
