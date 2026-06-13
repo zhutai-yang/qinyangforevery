@@ -1,0 +1,50 @@
+---
+description: TT 规划文档与 Skills 产出物结构治理
+globs: ["**/*.md", "**/db/*.sql", "**/切片*/**"]
+alwaysApply: false
+---
+
+# 文档结构治理（TT）
+
+## 规划根目录
+
+```
+乒乓球赛事管理系统（TT）整体规划/
+├── a-锚定项/                 # 02-技术栈.md 为版本权威源
+├── c-切片开发文档（后端）/
+├── d-前端视图设计（前端）/
+├── e-切片规划与里程碑.md
+├── g-参考文档/
+└── TT开发推进总纲.md
+```
+
+## 后端切片目录（Skills 产出）
+
+```
+切片N-名称/
+├── 00-切片概述.md
+├── implementation-baseline.md
+├── acceptance-baseline.md
+├── execution-plan.md
+├── baseline-review-report.md
+├── verify-report.md
+├── scope-check-report.md
+├── hygiene-report.md
+├── smoke-report.md
+├── handoff-checklist.md
+└── design-sync-proposals/DS-*.md
+```
+
+## 前端切片目录
+
+```
+切片UI-N-名称/
+├── implementation-baseline.md
+├── acceptance-baseline.md
+└── verify-fe-report.md
+```
+
+## 禁止
+
+- 引用已删除路径：`backend/`、`schema-mysql.sql`
+- 在锚定项外另写冲突的技术栈版本说明

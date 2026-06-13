@@ -1,0 +1,21 @@
+# Java / Maven
+target/
+backend/target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# IDE
+.idea/
+*.swp
+.DS_Store
+
+# 若本地曾安装过 npm 依赖，可忽略
+node_modules/
+dist/
+
+# 环境（勿提交密钥）
+.env
+.env.local

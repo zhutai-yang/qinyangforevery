@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+---
+# 安全约束规则（TT）
+
+## 密钥与凭证
+
+- 禁止提交 `.env`、真实 JWT secret、数据库密码
+- Docker 使用 `TT_JWT_SECRET:?` 等必填占位；本地用环境变量
+- `.gitignore` 覆盖 `.env`、`*.pem`
+
+## 日志与错误响应
+
+- 不记录密码、完整 Token
+- API 错误不暴露 SQL、堆栈给公开端
+
+## 接口
+
+- `/api/admin/**` 需 JWT（除 login/health 等白名单）
+- `/api/public/**` 只读公开数据，写操作需管理端
+- 文件上传校验类型与大小
+
+## TT 特记
+
+- 无多租户 Filter；勿引入 IMP 的 TenantContext 模式
+- `ADMIN_INITIAL_PASSWORD` 仅初始化，生产必须改密

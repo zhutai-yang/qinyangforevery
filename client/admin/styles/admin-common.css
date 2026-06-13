@@ -1,0 +1,128 @@
+/* 管理后台通用版式（参考常见赛事/运营后台） */
+.admin-page {
+  max-width: 100%;
+}
+
+.admin-page__title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #303133;
+  letter-spacing: -0.02em;
+}
+
+.admin-page__desc {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #909399;
+}
+
+.admin-page__card {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+}
+
+.admin-page__card .el-card__body {
+  padding: 16px;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-toolbar--end {
+  justify-content: flex-end;
+}
+
+.admin-toolbar .el-form--inline .el-form-item {
+  margin-bottom: 0;
+}
+
+/* 桌面端通用：表格撑满 */
+.admin-page__card .el-table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-page__card .el-table table {
+  width: 100%;
+}
+
+/* 桌面端通用：弹窗内输入/下拉框长度一致 */
+.admin-page .el-dialog .el-form .el-input,
+.admin-page .el-dialog .el-form .el-select {
+  width: 240px;
+}
+
+.admin-page .el-dialog .el-form .el-textarea {
+  width: 100%;
+}
+
+/* 桌面端通用：按钮大小保持一致（不影响 type="text"） */
+.admin-page .el-button:not(.el-button--text) {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+@media (max-width: 767px) {
+  .admin-page__title {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .admin-page__desc {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .admin-page__card .el-card__body {
+    padding: 12px;
+  }
+
+  .admin-toolbar {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .admin-page__card .el-table {
+  display: block;
+    width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-page__card .el-table table {
+    min-width: 680px;
+  }
+
+  .admin-page .el-form-item__label {
+    float: none;
+    display: block;
+    text-align: left;
+    line-height: 1.4;
+    padding: 0 0 6px;
+  }
+
+  .admin-page .el-form-item__content {
+    margin-left: 0 !important;
+  }
+
+  .el-dialog {
+    width: 92% !important;
+    margin-top: 8vh !important;
+  }
+
+  .el-dialog__body {
+    max-height: 60vh;
+    overflow: auto;
+    padding: 14px 16px;
+  }
+}

@@ -1,0 +1,29 @@
+---
+description: 数据库 Schema 治理（TT 版，路径对齐 imp-admin-api/db）
+globs: ["**/schema*.sql", "**/migration/**/*.sql", "**/db/**"]
+alwaysApply: false
+---
+
+# TT 数据库 Schema 治理
+
+## 权威链
+
+```
+schema.sql（MySQL 完整权威源）
+  → docker/mysql/init/01-schema.sql（Docker 快照，去掉 CREATE DATABASE/USE）
+  → migration/V*.sql（Flyway 增量）
+data.sql（初始数据，非结构）
+```
+
+## 禁止
+
+- 只改 migration 不改 schema.sql
+- 生产手工改表不回写 schema
+- 新表只写在 patch 脚本里
+
+## 变更步骤
+
+1. 编辑 `tt-admin/tt-admin-api/src/main/resources/db/schema.sql`
+2. 新增 `db/migration/V{YYYYMMDD}_{seq}__{desc}.sql`
+3. 运行 `docker/mysql/init` 同步脚本（从 schema.sql 生成）
+4. 本地验证：`tt-admin/tt-admin-api/scripts/init-db.sh`

@@ -1,0 +1,30 @@
+server:
+  port: ${SERVER_PORT:8096}
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME:tt_event}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      pool-name: TTHikariCP-Prod
+      minimum-idle: 5
+      maximum-pool-size: 20
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
+  flyway:
+    enabled: true
+
+tt:
+  files:
+    base-dir: ${TT_FILES_BASE_DIR:/data/uploads}
+
+logging:
+  level:
+    root: INFO
+    com.tt: INFO

@@ -1,0 +1,24 @@
+---
+description: TT 切片开发协作 — 文档链与代码落点
+alwaysApply: false
+---
+
+# TT 切片开发协作
+
+## 文档权威链
+
+```
+a-锚定项 → 00-切片概述.md → implementation-baseline + acceptance-baseline → 代码
+冲突时以上游为准。
+```
+
+## 前后端分工
+
+- 前端：指令发送 + 状态展示（`client/portal`, `client/admin`）
+- 后端：全部业务规则（`tt-application` 服务层）
+
+## 切片目录
+
+`乒乓球赛事管理系统（TT）整体规划/c-切片开发文档（后端）/切片{N}-*/`
+
+已完成切片目录 **封存**，功能增强开新切片编号。

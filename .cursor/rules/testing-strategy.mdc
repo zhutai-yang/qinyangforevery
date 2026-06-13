@@ -1,0 +1,26 @@
+---
+description: TT 验证与测试工具选择
+alwaysApply: true
+---
+
+# 验证与测试策略（TT）
+
+## 优先级
+
+| 场景 | 优先 | 避免 |
+|------|------|------|
+| API 行为 | `mvn verify` / curl / 集成测试 | 浏览器点选 |
+| 业务正确性 | JUnit + MockMvc 或 Testcontainers MySQL | 纯手工 |
+| UI 布局 | 浏览器 | — |
+| SQL 方言 | MySQL（CI docker mysql init） | 仅 H2 断言 MySQL 特性 |
+
+## 命令
+
+```bash
+mvn clean verify -pl tt-admin/tt-admin-api -am
+cd client && npm run lint && npm run build:all
+```
+
+## smoke
+
+PR 前对 acceptance P0 路径做 curl（见 `/smoke` skill）。

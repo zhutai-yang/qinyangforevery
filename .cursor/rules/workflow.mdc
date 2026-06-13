@@ -1,0 +1,11 @@
+---
+description: 工作流纪律 — Read-Before-Write、本地自检、切片分支
+alwaysApply: true
+---
+
+# TT 工作流纪律
+
+1. **Read-Before-Write**：改代码前先读切片 baseline 与 `schema.sql`
+2. **Local Self-Check**：提交前 `mvn verify`；改前端则 `npm run lint`
+3. **分支**：切片开发使用 `slice-{N}-{slug}`，不直接在 main 上大改
+4. **Schema**：改表必须同步 `schema.sql` + `db/migration/V*.sql`
