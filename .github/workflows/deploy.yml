@@ -1,0 +1,43 @@
+name: CD — Deploy to Aliyun ECS
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI — Build & Test"]
+    types: [completed]
+    branches: [main, master]
+
+jobs:
+  deploy:
+    name: Deploy — SSH to ECS
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
+    steps:
+      - name: Pull & rebuild on ECS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USER }}
+          key: ${{ secrets.ECS_SSH_KEY }}
+          port: ${{ secrets.ECS_PORT }}
+          script_stop: true
+          command_timeout: 40m
+          script: |
+            set -euo pipefail
+            APP_DIR="/root/qinyangforevery"
+            if [ -n "${{ secrets.ECS_APP_DIR }}" ]; then
+              APP_DIR="${{ secrets.ECS_APP_DIR }}"
+            fi
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "!! 目录 $APP_DIR 不是 git 仓库"
+              echo "!! 请先在 ECS 上: git clone + make up-ecs"
+              exit 1
+            fi
+            cd "$APP_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+            docker compose up -d --build
+            docker compose ps

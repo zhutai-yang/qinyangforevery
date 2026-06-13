@@ -64,6 +64,7 @@ docker/mysql/init/      # Compose 首次初始化
 | 本地 | `DB_*` 环境变量 + `mvn spring-boot:run` |
 | Docker | `docker compose` → mysql + rabbitmq + tt-admin-api + nginx |
 | 阿里云 ECS | `make up-ecs`（2G 小机：swap + JVM/MySQL 调优 + 80 端口） |
+| GitHub → ECS 自动部署 | push `main` 且 CI 通过后触发 `.github/workflows/deploy.yml` |
 | CI | `.github/workflows/ci.yml` |
 
 ### 阿里云试用 ECS（3 个月免费机）
@@ -80,6 +81,32 @@ make up-ecs
 ```
 
 MySQL / RabbitMQ / API 端口仅绑定 `127.0.0.1`，公网只经 Nginx 80 进入。首次构建约 10–20 分钟；内存不足时 `scripts/ecs-bootstrap.sh` 会创建 swap。
+
+### GitHub Actions 自动部署到 ECS
+
+**流程：** `push main` → CI 测试通过 → SSH 连 ECS → `git pull` + `docker compose up -d --build`
+
+**一次性配置：**
+
+1. ECS 上完成首次部署（`git clone` + `make up-ecs`）
+2. ECS 上生成部署密钥：
+
+```bash
+cd /root/qinyangforevery
+bash scripts/setup-github-deploy-key.sh
+```
+
+3. GitHub 仓库 → **Settings** → **Secrets and variables** → **Actions**，添加：
+
+| Secret | 值 |
+|--------|-----|
+| `ECS_HOST` | ECS 公网 IP |
+| `ECS_USER` | `root` |
+| `ECS_SSH_KEY` | 脚本输出的私钥全文 |
+| `ECS_PORT` | `22`（可选） |
+| `ECS_APP_DIR` | `/root/qinyangforevery`（可选） |
+
+4. 之后每次 push 到 `main`，CI 绿了之后会自动部署；也可在 Actions 页手动运行 **CD — Deploy to Aliyun ECS**。
 
 Docker 服务名：`tt-admin-api`（Nginx 反代 `/api/`）
 
