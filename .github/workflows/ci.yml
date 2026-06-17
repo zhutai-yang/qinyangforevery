@@ -36,7 +36,7 @@ jobs:
         run: |
           DB=tt-admin/tt-admin-api/src/main/resources/db
           sed -e 's/USE tt_event;//g' "$DB/schema.sql" | mysql -h127.0.0.1 -uroot tt_event_test
-          mysql -h127.0.0.1 -uroot tt_event_test < "$DB/data.sql"
+          sed -e 's/USE tt_event;//g' "$DB/data.sql" | mysql -h127.0.0.1 -uroot tt_event_test
 
       - name: Maven verify
         env:
