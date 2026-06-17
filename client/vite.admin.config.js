@@ -17,6 +17,9 @@ module.exports = defineConfig(({ mode }) => {
     resolve: {
       alias: { vue: 'vue/dist/vue.esm.js' }
     },
+    optimizeDeps: {
+      include: ['element-ui']
+    },
     server: {
       port,
       proxy: {
