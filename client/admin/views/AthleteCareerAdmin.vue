@@ -1,7 +1,7 @@
 <template>
   <div class="admin-page">
-    <h1 class="admin-page__title">球员职业生涯运营</h1>
-    <p class="admin-page__desc">维护该球员的高光展示与商务预告（按时间/排序在官网球员页聚合展示）。</p>
+    <h1 class="admin-page__title">明星内容运营</h1>
+    <p class="admin-page__desc">维护该选手的高光内容、商业预告与官网展示素材。</p>
     <el-card shadow="never" class="admin-page__card">
       <el-tabs v-model="tab">
         <el-tab-pane label="高光展示" name="highlights">

@@ -14,7 +14,22 @@
       <el-table v-loading="loading" :data="matches" stripe border size="small">
       <el-table-column prop="id" label="ID" width="70" />
       <el-table-column prop="scheduled_at" label="计划时间" width="180" />
+      <el-table-column label="阶段" width="120">
+        <template slot-scope="scope">{{ stageName(scope.row.stage_id) }}</template>
+      </el-table-column>
+      <el-table-column label="场地/台号" min-width="160">
+        <template slot-scope="scope">
+          {{ venueName(scope.row.venue_id) || '未定' }}
+          <span v-if="scope.row.table_no"> / {{ scope.row.table_no }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="round_label" label="轮次" width="100" />
+      <el-table-column label="双方" min-width="180">
+        <template slot-scope="scope">{{ participantsText(scope.row) }}</template>
+      </el-table-column>
+      <el-table-column label="比分" width="100">
+        <template slot-scope="scope">{{ scoreText(scope.row.result) || '—' }}</template>
+      </el-table-column>
       <el-table-column label="状态" width="100">
         <template slot-scope="scope">{{ statusText(scope.row.status) }}</template>
       </el-table-column>
@@ -55,13 +70,49 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="场馆">
+          <el-select v-model.number="form.venue_id" placeholder="选择场馆" filterable clearable>
+            <el-option v-for="v in venues" :key="v.id" :label="venueLabel(v)" :value="v.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="台号"><el-input v-model="form.table_no" placeholder="例如：T1" /></el-form-item>
         <el-form-item label="轮次"><el-input v-model="form.round_label" /></el-form-item>
+        <el-form-item label="双方选手">
+          <div class="matches-admin__participants">
+            <el-select v-model.number="form.home_athlete_id" placeholder="主队/左侧" filterable clearable>
+              <el-option v-for="a in athletes" :key="a.id" :label="athleteLabel(a)" :value="a.id" />
+            </el-select>
+            <span class="matches-admin__vs">vs</span>
+            <el-select v-model.number="form.away_athlete_id" placeholder="客队/右侧" filterable clearable>
+              <el-option v-for="a in athletes" :key="a.id" :label="athleteLabel(a)" :value="a.id" />
+            </el-select>
+          </div>
+        </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="form.status">
             <el-option label="已安排" value="scheduled" />
             <el-option label="已结束" value="finished" />
           </el-select>
         </el-form-item>
+        <template v-if="form.status === 'finished'">
+          <el-form-item label="比分">
+            <div class="matches-admin__score">
+              <el-input-number v-model="form.score_home" :min="0" :max="99" controls-position="right" />
+              <span class="matches-admin__vs">:</span>
+              <el-input-number v-model="form.score_away" :min="0" :max="99" controls-position="right" />
+            </div>
+          </el-form-item>
+          <el-form-item label="胜者">
+            <el-select v-model.number="form.winner_athlete_id" placeholder="选择胜者" clearable>
+              <el-option
+                v-for="a in selectedAthletes"
+                :key="a.id"
+                :label="athleteLabel(a)"
+                :value="a.id"
+              />
+            </el-select>
+          </el-form-item>
+        </template>
       </el-form>
       <span slot="footer">
         <el-button @click="dialog = false">取消</el-button>
@@ -97,12 +148,15 @@
 
 <script>
 import api from '../api.js';
+import { matchStatusText, scoreText } from '../../shared/statusLabels.js';
 
 export default {
   name: 'MatchesAdmin',
   data() {
     return {
       events: [],
+      venues: [],
+      athletes: [],
       eventId: null,
       stages: [],
       matches: [],
@@ -117,9 +171,16 @@ export default {
     };
   },
   async mounted() {
-    await this.loadEvents();
+    await Promise.all([this.loadVenues(), this.loadAthletes(), this.loadEvents()]);
+  },
+  computed: {
+    selectedAthletes() {
+      const ids = [this.form.home_athlete_id, this.form.away_athlete_id].filter(Boolean);
+      return this.athletes.filter((a) => ids.includes(a.id));
+    }
   },
   methods: {
+    scoreText,
     openStageDialog() {
       if (!this.eventId) return;
       const maxSort =
@@ -177,13 +238,41 @@ export default {
       }
     },
     statusText(status) {
-      switch (status) {
-        case 'scheduled':
-          return '已安排';
-        case 'finished':
-          return '已结束';
-        default:
-          return status || '—';
+      return matchStatusText(status);
+    },
+    stageName(id) {
+      const row = this.stages.find((s) => s.id === id);
+      return row ? row.name : '—';
+    },
+    venueName(id) {
+      const row = this.venues.find((v) => v.id === id);
+      return row ? row.name : '';
+    },
+    venueLabel(row) {
+      return row.address ? row.name + '（' + row.address + '）' : row.name;
+    },
+    athleteLabel(row) {
+      return row.association ? row.name + '（' + row.association + '）' : row.name;
+    },
+    participantsText(row) {
+      const parts = row.participants || [];
+      if (!parts.length) return '待定';
+      return parts.map((p) => p.athlete_name || p.athlete_id).join(' vs ');
+    },
+    async loadVenues() {
+      try {
+        const { data } = await api.get('/venues');
+        this.venues = data.list || [];
+      } catch (e) {
+        this.venues = [];
+      }
+    },
+    async loadAthletes() {
+      try {
+        const { data } = await api.get('/athletes', { params: { page: 1, pageSize: 500 } });
+        this.athletes = data.list || [];
+      } catch (e) {
+        this.athletes = [];
       }
     },
     async loadEvents() {
@@ -212,22 +301,79 @@ export default {
       }
     },
     openEdit(row) {
+      const participants = row && row.participants ? row.participants : [];
+      const result = row && row.result ? row.result : {};
       this.form = row
-        ? { ...row }
+        ? {
+          ...row,
+          home_athlete_id: participants[0] ? participants[0].athlete_id : null,
+          away_athlete_id: participants[1] ? participants[1].athlete_id : null,
+          score_home: result.score_home != null ? result.score_home : 0,
+          score_away: result.score_away != null ? result.score_away : 0,
+          winner_athlete_id: result.winner_athlete_id || null
+        }
         : {
           stage_id: this.stages.length ? this.stages[0].id : null,
           scheduled_at: null,
+          venue_id: null,
+          table_no: '',
           round_label: '',
-          status: 'scheduled'
+          status: 'scheduled',
+          home_athlete_id: null,
+          away_athlete_id: null,
+          score_home: 0,
+          score_away: 0,
+          winner_athlete_id: null
         };
       this.dialog = true;
     },
+    matchBody() {
+      return {
+        stage_id: this.form.stage_id,
+        scheduled_at: this.form.scheduled_at,
+        venue_id: this.form.venue_id || null,
+        table_no: this.form.table_no || null,
+        round_label: this.form.round_label,
+        status: this.form.status
+      };
+    },
+    participantIds() {
+      return [this.form.home_athlete_id, this.form.away_athlete_id].filter(Boolean);
+    },
+    validateParticipants() {
+      const ids = this.participantIds();
+      if (ids.length === 1) {
+        this.$message.error('双方选手需同时填写或同时留空');
+        return false;
+      }
+      if (ids.length === 2 && ids[0] === ids[1]) {
+        this.$message.error('双方选手不能相同');
+        return false;
+      }
+      return true;
+    },
     async saveMatch() {
       try {
+        if (!this.validateParticipants()) return;
+        let saved;
         if (this.form.id) {
-          await api.put('/matches/' + this.form.id, this.form);
+          const { data } = await api.put('/matches/' + this.form.id, this.matchBody());
+          saved = data;
         } else {
-          await api.post('/events/' + this.eventId + '/matches', this.form);
+          const { data } = await api.post('/events/' + this.eventId + '/matches', this.matchBody());
+          saved = data;
+        }
+        const matchId = this.form.id || (saved && saved.id);
+        const ids = this.participantIds();
+        if (matchId && ids.length === 2) {
+          await api.put('/matches/' + matchId + '/participants', { athleteIds: ids });
+        }
+        if (matchId && this.form.status === 'finished') {
+          await api.put('/matches/' + matchId + '/result', {
+            score_home: this.form.score_home || 0,
+            score_away: this.form.score_away || 0,
+            winner_athlete_id: this.form.winner_athlete_id || null
+          });
         }
         this.$message.success('已保存');
         this.dialog = false;
@@ -254,6 +400,22 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.matches-admin__participants,
+.matches-admin__score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.matches-admin__participants .el-select {
+  flex: 1;
+}
+
+.matches-admin__vs {
+  color: #909399;
+  font-size: 12px;
 }
 
 .matches-admin__hint {

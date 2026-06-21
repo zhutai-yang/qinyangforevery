@@ -1,0 +1,161 @@
+{
+  "source_name": "codex-athlete-data-import",
+  "data_collected_at": "2026-06-18",
+  "athlete": {
+    "name": "王楚钦",
+    "name_en": "Wang Chuqin",
+    "gender": "男",
+    "birth_date": "2000-05-11",
+    "birth_place": "吉林省吉林市",
+    "nationality": "中国",
+    "association": "中国 / China",
+    "height_cm": 182,
+    "dominant_hand": "左手",
+    "playing_style": "左手横拍",
+    "profile_title": "男单世界第一",
+    "profile_summary": "奥运冠军、世乒赛冠军，左手横拍打法，兼具速度、相持和前三板压迫力。",
+    "hero_image_url": "",
+    "social_url": "",
+    "major_identity": "奥运冠军、世乒赛冠军、WTT 大满贯冠军、世界杯冠军"
+  },
+  "ranking": {
+    "current_world_rank": 1,
+    "highest_world_rank": 1,
+    "ranking_points": null,
+    "ranking_date": "2026-06-18"
+  },
+  "achievements": [
+    {
+      "year": 2024,
+      "event": "巴黎奥运会",
+      "category": "混合双打",
+      "result": "金牌",
+      "partner_or_team": "孙颖莎",
+      "source_url": "https://en.wikipedia.org/wiki/Table_tennis_at_the_2024_Summer_Olympics_%E2%80%93_Mixed_doubles"
+    },
+    {
+      "year": 2024,
+      "event": "巴黎奥运会",
+      "category": "男子团体",
+      "result": "金牌",
+      "partner_or_team": "中国队",
+      "source_url": "https://en.wikipedia.org/wiki/Table_tennis_at_the_2024_Summer_Olympics"
+    },
+    {
+      "year": 2025,
+      "event": "世乒赛多哈站",
+      "category": "男单",
+      "result": "冠军",
+      "opponent": "Hugo Calderano",
+      "score": "4-1",
+      "source_url": "https://en.wikipedia.org/wiki/Wang_Chuqin"
+    },
+    {
+      "year": 2025,
+      "event": "世乒赛多哈站",
+      "category": "混合双打",
+      "result": "冠军",
+      "partner_or_team": "孙颖莎",
+      "source_url": "https://tabletennis.media/players/wang-chuqin/"
+    }
+  ],
+  "results": [
+    {
+      "date": "2026-02-01",
+      "event": "WTT 新加坡大满贯",
+      "category": "男单",
+      "result": "冠军",
+      "opponent": "林昀儒",
+      "score": "4-0",
+      "source_url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E6%96%B0%E5%8A%A0%E5%9D%A1%E5%A4%A7%E6%BB%A1%E8%B4%AF"
+    },
+    {
+      "date": "2026-04-20",
+      "event": "ITTF 世界杯澳门站",
+      "category": "男单",
+      "result": "冠军",
+      "opponent": "Sora Matsushima",
+      "score": "4-3",
+      "source_url": "https://en.wikipedia.org/wiki/Wang_Chuqin"
+    },
+    {
+      "date": "2026-05-01",
+      "event": "ITTF 亚洲杯",
+      "category": "男单",
+      "result": "冠军",
+      "opponent": "张本智和",
+      "score": "4-2",
+      "source_url": "https://en.wikipedia.org/wiki/Wang_Chuqin"
+    },
+    {
+      "date": "2026-06-01",
+      "event": "世界乒乓球团体锦标赛伦敦站",
+      "category": "男子团体",
+      "result": "冠军",
+      "partner_or_team": "中国队",
+      "source_url": "https://en.wikipedia.org/wiki/2026_World_Team_Table_Tennis_Championships"
+    }
+  ],
+  "upcoming_events": [
+    {
+      "start_date": "2026-06-25",
+      "end_date": "2026-07-05",
+      "event": "WTT 大满贯美国站",
+      "level": "大满贯",
+      "location": "美国洛杉矶/安大略会议中心",
+      "status": "预告",
+      "note": "高积分重点赛事，参赛以官方签表为准",
+      "source_url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E7%B3%BB%E5%88%97%E8%B5%9B"
+    },
+    {
+      "start_date": "2026-08-05",
+      "end_date": "2026-08-09",
+      "event": "WTT 冠军赛横滨站",
+      "level": "冠军赛",
+      "location": "日本横滨",
+      "status": "预告",
+      "note": "潜在重点单打赛事，参赛以官方签表为准",
+      "source_url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E7%B3%BB%E5%88%97%E8%B5%9B"
+    },
+    {
+      "start_date": "2026-10-01",
+      "end_date": "2026-10-11",
+      "event": "WTT 大满贯北京站",
+      "level": "大满贯",
+      "location": "中国北京",
+      "status": "预告",
+      "note": "主场大满贯重点赛事",
+      "source_url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E7%B3%BB%E5%88%97%E8%B5%9B"
+    },
+    {
+      "start_date": "2026-12-08",
+      "end_date": "2026-12-13",
+      "event": "WTT 总决赛",
+      "level": "总决赛",
+      "location": "中国香港",
+      "status": "预告",
+      "note": "年终顶级赛事，资格取决于积分/排名",
+      "source_url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E7%B3%BB%E5%88%97%E8%B5%9B"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Table Tennis Media",
+      "url": "https://tabletennis.media/players/wang-chuqin/",
+      "retrieved_at": "2026-06-18",
+      "note": "王楚钦基础资料与排名口径"
+    },
+    {
+      "name": "WTT 2026 Series Calendar",
+      "url": "https://zh.wikipedia.org/wiki/2026%E5%B9%B4WTT%E7%B3%BB%E5%88%97%E8%B5%9B",
+      "retrieved_at": "2026-06-18",
+      "note": "2026 赛事预告交叉核对"
+    }
+  ],
+  "extra_profile": {
+    "external_ids": {},
+    "unverified_notes": [
+      "排名、签表和参赛名单会变化，赛前以 WTT/ITTF 官方发布为准。"
+    ]
+  }
+}

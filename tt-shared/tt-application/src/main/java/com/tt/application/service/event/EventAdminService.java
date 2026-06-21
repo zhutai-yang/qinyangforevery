@@ -3,6 +3,7 @@ package com.tt.application.service.event;
 import com.tt.application.service.governance.AuditService;
 import com.tt.common.exception.NotFoundException;
 import com.tt.common.support.JdbcSupport;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,27 +23,35 @@ public class EventAdminService {
     this.audit = audit;
   }
 
-  public Map<String, Object> listEvents(int page, int pageSize, String status) {
+  public Map<String, Object> listEvents(
+      int page, int pageSize, String status, String startDate, String endDate) {
     int size = JdbcSupport.pageSize(pageSize, 100);
     int off = (JdbcSupport.page(page) - 1) * size;
-    int total;
-    List<Map<String, Object>> list;
+    StringBuilder where = new StringBuilder(" WHERE 1=1");
+    List<Object> args = new ArrayList<>();
     if (status != null && !status.isEmpty()) {
-      total =
-          jdbc.queryForObject(
-              "SELECT COUNT(1) FROM evt_event WHERE status = ?", Integer.class, status);
-      list =
-          jdbc.queryForList(
-              "SELECT * FROM evt_event WHERE status = ? ORDER BY id DESC LIMIT ? OFFSET ?",
-              status,
-              size,
-              off);
-    } else {
-      total = jdbc.queryForObject("SELECT COUNT(1) FROM evt_event", Integer.class);
-      list =
-          jdbc.queryForList(
-              "SELECT * FROM evt_event ORDER BY id DESC LIMIT ? OFFSET ?", size, off);
+      where.append(" AND status = ?");
+      args.add(status);
     }
+    if (startDate != null && !startDate.isEmpty()) {
+      where.append(" AND (start_date IS NULL OR start_date >= ?)");
+      args.add(JdbcSupport.parseDate(startDate));
+    }
+    if (endDate != null && !endDate.isEmpty()) {
+      where.append(" AND (end_date IS NULL OR end_date <= ?)");
+      args.add(JdbcSupport.parseDate(endDate));
+    }
+
+    Integer total =
+        jdbc.queryForObject(
+            "SELECT COUNT(1) FROM evt_event" + where, Integer.class, args.toArray());
+    List<Object> listArgs = new ArrayList<>(args);
+    listArgs.add(size);
+    listArgs.add(off);
+    List<Map<String, Object>> list =
+        jdbc.queryForList(
+            "SELECT * FROM evt_event" + where + " ORDER BY id DESC LIMIT ? OFFSET ?",
+            listArgs.toArray());
     return Map.of("list", list, "total", total, "page", JdbcSupport.page(page), "pageSize", size);
   }
 

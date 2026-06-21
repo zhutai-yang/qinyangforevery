@@ -59,8 +59,10 @@ public class AdminController {
   public Map<String, Object> events(
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "20") int pageSize,
-      @RequestParam(required = false) String status) {
-    return eventAdminService.listEvents(page, pageSize, status);
+      @RequestParam(required = false) String status,
+      @RequestParam(required = false) String startDate,
+      @RequestParam(required = false) String endDate) {
+    return eventAdminService.listEvents(page, pageSize, status, startDate, endDate);
   }
 
   @PostMapping("/events")
@@ -189,6 +191,11 @@ public class AdminController {
   @PostMapping("/athletes")
   public ResponseEntity<Map<String, Object>> createAthlete(@RequestBody Map<String, Object> body) {
     return ResponseEntity.status(HttpStatus.CREATED).body(athleteAdminService.createAthlete(body));
+  }
+
+  @PostMapping("/athletes/import")
+  public Map<String, Object> importAthlete(@RequestBody Map<String, Object> body) {
+    return athleteAdminService.importAthleteData(body, uid());
   }
 
   @PutMapping("/athletes/{id}")
