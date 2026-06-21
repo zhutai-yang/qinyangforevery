@@ -84,10 +84,104 @@ CREATE TABLE IF NOT EXISTS evt_event_venue (
 CREATE TABLE IF NOT EXISTS reg_athlete (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL,
+  name_en VARCHAR(128) NULL,
   gender VARCHAR(16) NULL,
   birth_date DATE NULL,
+  birth_place VARCHAR(256) NULL,
+  nationality VARCHAR(128) NULL,
+  height_cm INT NULL,
+  dominant_hand VARCHAR(32) NULL,
+  playing_style VARCHAR(256) NULL,
   association VARCHAR(256) NULL,
-  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+  profile_title VARCHAR(256) NULL,
+  profile_summary VARCHAR(1024) NULL,
+  hero_image_url VARCHAR(512) NULL,
+  social_url VARCHAR(512) NULL,
+  current_world_rank INT NULL,
+  highest_world_rank INT NULL,
+  ranking_points INT NULL,
+  major_identity VARCHAR(512) NULL,
+  source_urls TEXT NULL,
+  extra_profile_json MEDIUMTEXT NULL,
+  data_collected_at DATETIME(3) NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  KEY ix_reg_athlete_name (name),
+  KEY ix_reg_athlete_rank (current_world_rank)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS reg_athlete_achievement (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  athlete_id BIGINT NOT NULL,
+  year INT NULL,
+  event_name VARCHAR(256) NOT NULL,
+  category VARCHAR(128) NULL,
+  result_label VARCHAR(128) NULL,
+  partner_or_team VARCHAR(256) NULL,
+  opponent VARCHAR(256) NULL,
+  score VARCHAR(64) NULL,
+  source_url VARCHAR(2048) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_athlete_achievement_athlete FOREIGN KEY (athlete_id) REFERENCES reg_athlete(id) ON DELETE CASCADE,
+  KEY ix_athlete_achievement_athlete_sort (athlete_id, sort_order, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS reg_athlete_result (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  athlete_id BIGINT NOT NULL,
+  match_date DATE NULL,
+  event_name VARCHAR(256) NOT NULL,
+  category VARCHAR(128) NULL,
+  result_label VARCHAR(128) NULL,
+  partner_or_team VARCHAR(256) NULL,
+  opponent VARCHAR(256) NULL,
+  score VARCHAR(64) NULL,
+  source_url VARCHAR(2048) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_athlete_result_athlete FOREIGN KEY (athlete_id) REFERENCES reg_athlete(id) ON DELETE CASCADE,
+  KEY ix_athlete_result_athlete_sort (athlete_id, sort_order, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS reg_athlete_upcoming_event (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  athlete_id BIGINT NOT NULL,
+  start_date DATE NULL,
+  end_date DATE NULL,
+  event_name VARCHAR(256) NOT NULL,
+  level_label VARCHAR(128) NULL,
+  location VARCHAR(256) NULL,
+  venue VARCHAR(256) NULL,
+  status VARCHAR(64) NULL,
+  note VARCHAR(1024) NULL,
+  source_url VARCHAR(2048) NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_athlete_upcoming_event_athlete FOREIGN KEY (athlete_id) REFERENCES reg_athlete(id) ON DELETE CASCADE,
+  KEY ix_athlete_upcoming_event_athlete_date (athlete_id, start_date, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS reg_athlete_data_source (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  athlete_id BIGINT NOT NULL,
+  source_name VARCHAR(256) NOT NULL,
+  source_url VARCHAR(2048) NOT NULL,
+  retrieved_at DATETIME(3) NULL,
+  note VARCHAR(1024) NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_athlete_data_source_athlete FOREIGN KEY (athlete_id) REFERENCES reg_athlete(id) ON DELETE CASCADE,
+  KEY ix_athlete_data_source_athlete (athlete_id, id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS reg_athlete_import_snapshot (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  athlete_id BIGINT NOT NULL,
+  source_name VARCHAR(128) NOT NULL DEFAULT 'quick_import',
+  payload_json MEDIUMTEXT NOT NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_athlete_import_snapshot_athlete FOREIGN KEY (athlete_id) REFERENCES reg_athlete(id) ON DELETE CASCADE,
+  KEY ix_athlete_import_snapshot_athlete (athlete_id, created_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sch_stage (

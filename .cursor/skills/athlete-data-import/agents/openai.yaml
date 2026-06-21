@@ -1,0 +1,7 @@
+interface:
+  display_name: "TT Athlete Data Import"
+  short_description: "Gather and normalize athlete data for quick import into TT."
+  default_prompt: "Use $athlete-data-import to collect one athlete's verified public data, output the TT import JSON, then guide me through quick import."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,7 +1,7 @@
 <template>
   <div class="admin-page dashboard">
     <h1 class="admin-page__title">工作台</h1>
-    <p class="admin-page__desc">快速进入各业务模块，管理赛事、内容与系统配置。</p>
+    <p class="admin-page__desc">围绕明星选手、高光内容、商业预告与官网首页编排开展日常运营。</p>
 
     <el-row :gutter="16" class="dashboard__shortcuts">
       <el-col v-for="item in shortcuts" :key="item.path" :xs="24" :sm="12" :md="8" :lg="6">
@@ -23,9 +23,9 @@
         <span>使用说明</span>
       </div>
       <ul class="dashboard__tips-list">
-        <li><strong>赛事运营</strong>：先维护「赛事」「场馆」，再在「赛程」下按赛事筛选场次。</li>
-        <li><strong>内容运营</strong>：文章、关注球员与门户首页区块可独立配置。</li>
-        <li><strong>系统</strong>：外部数据源用于抓取或同步；字典与审计用于枚举与操作留痕。</li>
+        <li><strong>明星选手</strong>：先维护展示资料，再进入内容运营维护高光与商业预告。</li>
+        <li><strong>首页编排</strong>：首页明星、推荐文章、赛事预告与外部动态可独立配置。</li>
+        <li><strong>赛事资料库</strong>：赛事、赛程、成绩用于支撑选手过往战绩、当前状态与赛事预告。</li>
       </ul>
     </el-card>
   </div>
@@ -37,15 +37,15 @@ export default {
   data() {
     return {
       shortcuts: [
-        { path: '/events', title: '赛事', desc: '赛事与届次、发布状态', icon: 'el-icon-trophy', tone: 'gold' },
-        { path: '/venues', title: '场馆', desc: '比赛场馆档案', icon: 'el-icon-location-outline', tone: 'blue' },
-        { path: '/matches', title: '赛程', desc: '场次与轮次', icon: 'el-icon-date', tone: 'teal' },
-        { path: '/athletes', title: '运动员', desc: '人员档案', icon: 'el-icon-user', tone: 'purple' },
-        { path: '/articles', title: '文章', desc: '资讯与公告', icon: 'el-icon-document', tone: 'indigo' },
-        { path: '/featured', title: '关注球员', desc: '门户展示顺序', icon: 'el-icon-star-on', tone: 'amber' },
-        { path: '/home-config', title: '首页配置', desc: '门户区块开关', icon: 'el-icon-menu', tone: 'gray' },
-        { path: '/ext', title: '外部数据源', desc: '抓取与同步任务', icon: 'el-icon-link', tone: 'cyan' },
-        { path: '/dict-audit', title: '字典与审计', desc: '枚举与日志', icon: 'el-icon-setting', tone: 'slate' }
+        { path: '/athletes', title: '明星选手', desc: '档案、展示资料与运营入口', icon: 'el-icon-user', tone: 'purple' },
+        { path: '/featured', title: '首页明星', desc: '官网展示顺序', icon: 'el-icon-star-on', tone: 'amber' },
+        { path: '/articles', title: '内容中心', desc: '资讯、公告与选手故事', icon: 'el-icon-document', tone: 'indigo' },
+        { path: '/home-config', title: '首页编排', desc: '高级官网区块开关', icon: 'el-icon-menu', tone: 'gray' },
+        { path: '/events', title: '赛事资料', desc: '赛事与届次素材', icon: 'el-icon-trophy', tone: 'gold' },
+        { path: '/matches', title: '赛程战绩', desc: '场次、预告与结果', icon: 'el-icon-date', tone: 'teal' },
+        { path: '/venues', title: '场馆资料', desc: '比赛场馆档案', icon: 'el-icon-location-outline', tone: 'blue' },
+        { path: '/ext', title: '外部动态', desc: '抓取与同步任务', icon: 'el-icon-link', tone: 'cyan' },
+        { path: '/dict-audit', title: '系统治理', desc: '枚举与审计日志', icon: 'el-icon-setting', tone: 'slate' }
       ]
     };
   },

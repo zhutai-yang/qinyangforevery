@@ -10,7 +10,7 @@
     >
       <div class="logo" :class="{ 'logo--collapsed': asideCollapsed && !isMobile }">
         <i class="el-icon-s-platform logo__mark" />
-        <span v-show="!asideCollapsed" class="logo__text">ttf_admin</span>
+        <span v-show="!asideCollapsed" class="logo__text">TT 内容运营</span>
       </div>
       <el-menu
         :default-active="activeMenu"
@@ -27,10 +27,32 @@
           <span slot="title">工作台</span>
         </el-menu-item>
 
+        <el-submenu index="group-content">
+          <template slot="title">
+            <i class="el-icon-document" />
+            <span>明星内容运营</span>
+          </template>
+          <el-menu-item index="/athletes" :route="{ path: '/athletes' }">
+            <span slot="title">明星选手</span>
+          </el-menu-item>
+          <el-menu-item index="/articles" :route="{ path: '/articles' }">
+            <span slot="title">内容中心</span>
+          </el-menu-item>
+          <el-menu-item index="/featured" :route="{ path: '/featured' }">
+            <span slot="title">首页明星</span>
+          </el-menu-item>
+          <el-menu-item index="/home-config" :route="{ path: '/home-config' }">
+            <span slot="title">首页编排</span>
+          </el-menu-item>
+          <el-menu-item index="/image-library" :route="{ path: '/image-library' }">
+            <span slot="title">公用图片库</span>
+          </el-menu-item>
+        </el-submenu>
+
         <el-submenu index="group-ops">
           <template slot="title">
             <i class="el-icon-s-flag" />
-            <span>赛事运营</span>
+            <span>赛事资料库</span>
           </template>
           <el-menu-item index="/events" :route="{ path: '/events' }">
             <span slot="title">赛事</span>
@@ -39,29 +61,7 @@
             <span slot="title">场馆</span>
           </el-menu-item>
           <el-menu-item index="/matches" :route="{ path: '/matches' }">
-            <span slot="title">赛程</span>
-          </el-menu-item>
-          <el-menu-item index="/athletes" :route="{ path: '/athletes' }">
-            <span slot="title">运动员</span>
-          </el-menu-item>
-        </el-submenu>
-
-        <el-submenu index="group-content">
-          <template slot="title">
-            <i class="el-icon-document" />
-            <span>内容运营</span>
-          </template>
-          <el-menu-item index="/articles" :route="{ path: '/articles' }">
-            <span slot="title">文章</span>
-          </el-menu-item>
-          <el-menu-item index="/featured" :route="{ path: '/featured' }">
-            <span slot="title">关注球员</span>
-          </el-menu-item>
-          <el-menu-item index="/home-config" :route="{ path: '/home-config' }">
-            <span slot="title">首页配置</span>
-          </el-menu-item>
-          <el-menu-item index="/image-library" :route="{ path: '/image-library' }">
-            <span slot="title">公用图片库</span>
+            <span slot="title">赛程战绩</span>
           </el-menu-item>
         </el-submenu>
 
@@ -71,7 +71,7 @@
             <span>系统</span>
           </template>
           <el-menu-item index="/ext" :route="{ path: '/ext' }">
-            <span slot="title">外部数据源</span>
+            <span slot="title">外部动态</span>
           </el-menu-item>
           <el-menu-item index="/dict-audit" :route="{ path: '/dict-audit' }">
             <span slot="title">字典与审计</span>

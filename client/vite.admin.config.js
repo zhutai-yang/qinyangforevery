@@ -17,9 +17,6 @@ module.exports = defineConfig(({ mode }) => {
     resolve: {
       alias: { vue: 'vue/dist/vue.esm.js' }
     },
-    optimizeDeps: {
-      include: ['element-ui']
-    },
     server: {
       port,
       proxy: {
@@ -29,7 +26,8 @@ module.exports = defineConfig(({ mode }) => {
     },
     build: {
       outDir: path.resolve(__dirname, '../dist/admin'),
-      emptyOutDir: true
+      emptyOutDir: true,
+      chunkSizeWarningLimit: 700
     }
   };
 });

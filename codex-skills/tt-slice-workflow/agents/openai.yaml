@@ -1,0 +1,7 @@
+interface:
+  display_name: "TT Slice Workflow"
+  short_description: "TT 切片开发、审查、验收工作流"
+  default_prompt: "Use $tt-slice-workflow to run the TT slice quality chain for the current backend or frontend slice."
+
+policy:
+  allow_implicit_invocation: true

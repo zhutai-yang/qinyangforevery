@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import './styles/portal-common.css';
 import { Toast } from 'vant';
 import App from './App.vue';
 import Home from './views/Home.vue';

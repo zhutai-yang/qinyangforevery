@@ -46,10 +46,20 @@ TT 沿用 IMP 切片 + Skills 链，按赛事系统规模**精简**（无 slice-
 ├── resolve/
 ├── smoke/
 ├── handoff/
-└── design-sync/
+├── design-sync/
+├── tt-slice-workflow-testing/
+└── athlete-data-import/
 ```
 
-## 4. 未迁移的 IMP 技能（TT 不需要）
+## 4. 模块/闭环测试技能
+
+`tt-slice-workflow-testing` 用于“测一下赛事管理 / 验一下成绩录入 / 检查官网赛程字段 / 跑后台到官网闭环”等场景。
+
+它会先发现模块，再让使用者选择测试模式（冒烟、字段/API、后台到官网、完整闭环、性能、静态计划、可视化证据），随后生成用例清单并输出 Markdown 摘要 + HTML 证据报告。测试证据默认放在仓库外部的 sibling artifact 目录，不进入 git。
+
+`athlete-data-import` 用于采集单个运动员的公开资料、排名、荣誉、近期成绩、未来赛程与来源证据，输出后台“明星选手 -> 快捷导入/更新”可直接粘贴的 JSON。
+
+## 5. 未迁移的 IMP 技能（TT 不需要）
 
 | IMP 技能 | 原因 |
 |----------|------|
@@ -58,7 +68,7 @@ TT 沿用 IMP 切片 + Skills 链，按赛事系统规模**精简**（无 slice-
 | doc-consistency-check | 可 periodic 人工；需要时再补 |
 | split-return-csv | IMP 发码域专用 |
 
-## 5. 文档与代码映射
+## 6. 文档与代码映射
 
 | 切片 | 代码 |
 |------|------|
@@ -66,7 +76,7 @@ TT 沿用 IMP 切片 + Skills 链，按赛事系统规模**精简**（无 slice-
 | 业务录入 | `*AdminService`, `/api/admin/**` |
 | 官网 | `PublicService`, `/api/public/**` |
 
-## 6. 本地自检
+## 7. 本地自检
 
 ```bash
 mvn clean verify -pl tt-admin/tt-admin-api -am
@@ -74,6 +84,6 @@ cd client && npm run lint && npm run build:all
 docker compose up -d --build   # 可选全栈
 ```
 
-## 7. 自动继续规则
+## 8. 自动继续规则
 
 见 `skill-protocol.md`：PASS → 下一 skill；FAIL → 修复重试；BLOCKED → 升级人工。

@@ -1,0 +1,7 @@
+interface:
+  display_name: "TT Slice Workflow Testing"
+  short_description: "Cross-surface TT workflow testing against top-level design."
+  default_prompt: "Use $tt-slice-workflow-testing to test a TT module: discover the target, ask me to choose test modes, then execute and report."
+
+policy:
+  allow_implicit_invocation: true

@@ -13,17 +13,11 @@
       class="main"
       :class="{
         'main--home': $route.path === '/',
-        'main--padded': $route.path !== '/',
-        'main--tabbar': showTabbar
+        'main--padded': $route.path !== '/'
       }"
     >
       <router-view />
     </main>
-    <van-tabbar v-if="showTabbar" route fixed placeholder safe-area-inset-bottom>
-      <van-tabbar-item replace to="/" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item replace to="/events" icon="medal-o">赛事</van-tabbar-item>
-      <van-tabbar-item replace to="/news" icon="notes-o">资讯</van-tabbar-item>
-    </van-tabbar>
   </div>
 </template>
 
@@ -36,11 +30,6 @@ export default {
     },
     navTitle() {
       return (this.$route.meta && this.$route.meta.navTitle) || '';
-    },
-    showTabbar() {
-      if (this.$route.meta && this.$route.meta.hideTabbar) return false;
-      const p = this.$route.path;
-      return p === '/' || p === '/events' || p === '/news';
     }
   },
   methods: {
@@ -69,8 +58,16 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   min-height: 100vh;
   min-height: 100dvh;
-  color: #1d1d1f;
-  background: #f7f8fa;
+  color: #172033;
+  background:
+    radial-gradient(circle at 0% 12%, rgba(255, 75, 89, 0.06), transparent 28%),
+    radial-gradient(circle at 100% 0%, rgba(47, 125, 255, 0.08), transparent 30%),
+    #f7fbff;
+  --van-tabbar-item-active-color: #175cd3;
+  --van-tabbar-background-color: rgba(255, 255, 255, 0.92);
+  --van-nav-bar-icon-color: #175cd3;
+  --van-nav-bar-text-color: #175cd3;
+  --van-nav-bar-title-text-color: #172033;
 }
 
 .main {
@@ -80,6 +77,13 @@ body {
 
 .main--home {
   background: transparent;
+}
+
+.portal-root .van-tabbar {
+  border-top: 1px solid rgba(47, 125, 255, 0.1);
+  box-shadow: 0 -12px 30px rgba(23, 32, 51, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .main--padded {

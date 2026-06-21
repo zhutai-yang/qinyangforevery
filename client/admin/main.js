@@ -1,26 +1,99 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import ElementUI from 'element-ui';
+import Aside from 'element-ui/lib/aside';
+import Breadcrumb from 'element-ui/lib/breadcrumb';
+import BreadcrumbItem from 'element-ui/lib/breadcrumb-item';
+import Button from 'element-ui/lib/button';
+import Card from 'element-ui/lib/card';
+import Col from 'element-ui/lib/col';
+import Container from 'element-ui/lib/container';
+import DatePicker from 'element-ui/lib/date-picker';
+import Dialog from 'element-ui/lib/dialog';
+import Dropdown from 'element-ui/lib/dropdown';
+import DropdownItem from 'element-ui/lib/dropdown-item';
+import DropdownMenu from 'element-ui/lib/dropdown-menu';
+import Form from 'element-ui/lib/form';
+import FormItem from 'element-ui/lib/form-item';
+import Header from 'element-ui/lib/header';
+import Input from 'element-ui/lib/input';
+import InputNumber from 'element-ui/lib/input-number';
+import Loading from 'element-ui/lib/loading';
+import Main from 'element-ui/lib/main';
+import Menu from 'element-ui/lib/menu';
+import MenuItem from 'element-ui/lib/menu-item';
+import Message from 'element-ui/lib/message';
+import MessageBox from 'element-ui/lib/message-box';
+import Option from 'element-ui/lib/option';
+import Pagination from 'element-ui/lib/pagination';
+import Row from 'element-ui/lib/row';
+import Select from 'element-ui/lib/select';
+import Submenu from 'element-ui/lib/submenu';
+import Switch from 'element-ui/lib/switch';
+import TabPane from 'element-ui/lib/tab-pane';
+import Table from 'element-ui/lib/table';
+import TableColumn from 'element-ui/lib/table-column';
+import Tabs from 'element-ui/lib/tabs';
+import Upload from 'element-ui/lib/upload';
 import 'element-ui/lib/theme-chalk/index.css';
 import './styles/admin-common.css';
 import App from './App.vue';
-import Login from './views/Login.vue';
 import Layout from './views/Layout.vue';
-import Dashboard from './views/Dashboard.vue';
-import EventsAdmin from './views/EventsAdmin.vue';
-import VenuesAdmin from './views/VenuesAdmin.vue';
-import MatchesAdmin from './views/MatchesAdmin.vue';
-import AthletesAdmin from './views/AthletesAdmin.vue';
-import ArticlesAdmin from './views/ArticlesAdmin.vue';
-import FeaturedAdmin from './views/FeaturedAdmin.vue';
-import HomeConfigAdmin from './views/HomeConfigAdmin.vue';
-import ExtAdmin from './views/ExtAdmin.vue';
-import DictAudit from './views/DictAudit.vue';
-import AthleteCareerAdmin from './views/AthleteCareerAdmin.vue';
-import ImageLibraryAdmin from './views/ImageLibraryAdmin.vue';
+
+const Login = () => import('./views/Login.vue');
+const Dashboard = () => import('./views/Dashboard.vue');
+const EventsAdmin = () => import('./views/EventsAdmin.vue');
+const VenuesAdmin = () => import('./views/VenuesAdmin.vue');
+const MatchesAdmin = () => import('./views/MatchesAdmin.vue');
+const AthletesAdmin = () => import('./views/AthletesAdmin.vue');
+const ArticlesAdmin = () => import('./views/ArticlesAdmin.vue');
+const FeaturedAdmin = () => import('./views/FeaturedAdmin.vue');
+const HomeConfigAdmin = () => import('./views/HomeConfigAdmin.vue');
+const ExtAdmin = () => import('./views/ExtAdmin.vue');
+const DictAudit = () => import('./views/DictAudit.vue');
+const AthleteCareerAdmin = () => import('./views/AthleteCareerAdmin.vue');
+const ImageLibraryAdmin = () => import('./views/ImageLibraryAdmin.vue');
 
 Vue.use(VueRouter);
-Vue.use(ElementUI);
+[
+  Aside,
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  Card,
+  Col,
+  Container,
+  DatePicker,
+  Dialog,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  Form,
+  FormItem,
+  Header,
+  Input,
+  InputNumber,
+  Main,
+  Menu,
+  MenuItem,
+  Option,
+  Pagination,
+  Row,
+  Select,
+  Submenu,
+  Switch,
+  TabPane,
+  Table,
+  TableColumn,
+  Tabs,
+  Upload
+].forEach((component) => Vue.use(component));
+Vue.use(Loading.directive);
+Vue.prototype.$loading = Loading.service;
+Vue.prototype.$message = Message;
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
 
 const router = new VueRouter({
   mode: 'history',
@@ -37,12 +110,12 @@ const router = new VueRouter({
         { path: 'events', component: EventsAdmin, meta: { title: '赛事管理' } },
         { path: 'venues', component: VenuesAdmin, meta: { title: '场馆管理' } },
         { path: 'matches', component: MatchesAdmin, meta: { title: '赛程管理' } },
-        { path: 'athletes', component: AthletesAdmin, meta: { title: '运动员' } },
-        { path: 'athletes/:id/career', component: AthleteCareerAdmin, props: true, meta: { title: '球员职业生涯' } },
-        { path: 'articles', component: ArticlesAdmin, meta: { title: '文章管理' } },
-        { path: 'featured', component: FeaturedAdmin, meta: { title: '关注球员' } },
-        { path: 'home-config', component: HomeConfigAdmin, meta: { title: '首页配置' } },
-        { path: 'ext', component: ExtAdmin, meta: { title: '外部数据源' } },
+        { path: 'athletes', component: AthletesAdmin, meta: { title: '明星选手' } },
+        { path: 'athletes/:id/career', component: AthleteCareerAdmin, props: true, meta: { title: '明星内容运营' } },
+        { path: 'articles', component: ArticlesAdmin, meta: { title: '内容中心' } },
+        { path: 'featured', component: FeaturedAdmin, meta: { title: '首页明星' } },
+        { path: 'home-config', component: HomeConfigAdmin, meta: { title: '首页编排' } },
+        { path: 'ext', component: ExtAdmin, meta: { title: '外部动态' } },
         { path: 'image-library', component: ImageLibraryAdmin, meta: { title: '图片库管理' } },
         { path: 'dict-audit', component: DictAudit, meta: { title: '字典与审计' } }
       ]

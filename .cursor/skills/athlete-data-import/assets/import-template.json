@@ -1,0 +1,35 @@
+{
+  "source_name": "athlete-data-import",
+  "data_collected_at": "2026-06-18",
+  "athlete": {
+    "name": "",
+    "name_en": "",
+    "gender": "",
+    "birth_date": "",
+    "birth_place": "",
+    "nationality": "",
+    "association": "",
+    "height_cm": null,
+    "dominant_hand": "",
+    "playing_style": "",
+    "profile_title": "",
+    "profile_summary": "",
+    "hero_image_url": "",
+    "social_url": "",
+    "major_identity": ""
+  },
+  "ranking": {
+    "current_world_rank": null,
+    "highest_world_rank": null,
+    "ranking_points": null,
+    "ranking_date": ""
+  },
+  "achievements": [],
+  "results": [],
+  "upcoming_events": [],
+  "sources": [],
+  "extra_profile": {
+    "external_ids": {},
+    "unverified_notes": []
+  }
+}

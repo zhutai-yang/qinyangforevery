@@ -230,6 +230,11 @@ public class PublicService {
         jdbc.queryForList(
             "SELECT athlete_id, sort_order FROM cfg_featured_athlete WHERE enabled = 1 "
                 + "ORDER BY sort_order, athlete_id");
+    if (fa.isEmpty()) {
+      fa =
+          jdbc.queryForList(
+              "SELECT id AS athlete_id, 0 AS sort_order FROM reg_athlete ORDER BY id LIMIT 2");
+    }
     List<Map<String, Object>> out = new ArrayList<>();
     for (Map<String, Object> row : fa) {
       long aid = ((Number) row.get("athlete_id")).longValue();
@@ -315,6 +320,34 @@ public class PublicService {
       else history.add(item);
     }
 
+    List<Map<String, Object>> importedUpcoming =
+        jdbc.queryForList(
+            "SELECT id, start_date AS scheduled_at, end_date, event_name, level_label, location, venue, status, note, source_url, sort_order "
+                + "FROM reg_athlete_upcoming_event WHERE athlete_id = ? ORDER BY start_date, sort_order, id",
+            id);
+    for (Map<String, Object> row : importedUpcoming) {
+      Map<String, Object> item = new LinkedHashMap<>(row);
+      item.put("source_type", "imported");
+      upcoming.add(item);
+    }
+
+    List<Map<String, Object>> importedResults =
+        jdbc.queryForList(
+            "SELECT id, match_date AS scheduled_at, event_name, category, result_label, partner_or_team, opponent, score, source_url, sort_order "
+                + "FROM reg_athlete_result WHERE athlete_id = ? ORDER BY match_date DESC, sort_order, id",
+            id);
+    for (Map<String, Object> row : importedResults) {
+      Map<String, Object> item = new LinkedHashMap<>(row);
+      item.put("source_type", "imported");
+      history.add(item);
+    }
+
+    List<Map<String, Object>> achievements =
+        jdbc.queryForList(
+            "SELECT id, year, event_name, category, result_label, partner_or_team, opponent, score, source_url, sort_order "
+                + "FROM reg_athlete_achievement WHERE athlete_id = ? ORDER BY sort_order, year DESC, id",
+            id);
+
     List<Map<String, Object>> highlights =
         jdbc.queryForList(
             "SELECT id, athlete_id, title, cover_url, summary, sort_order, status, published_at "
@@ -336,6 +369,8 @@ public class PublicService {
         upcoming,
         "history",
         history,
+        "achievements",
+        achievements,
         "highlights",
         highlights,
         "business_previews",
@@ -368,7 +403,7 @@ public class PublicService {
         List<Map<String, Object>> highlights =
             jdbc.queryForList(
                 "SELECT h.id, h.athlete_id, h.title, h.cover_url, h.summary, h.published_at, "
-                    + "a.name AS athlete_name "
+                    + "a.name AS athlete_name, a.profile_title, a.profile_summary, a.hero_image_url, a.social_url "
                     + "FROM cfg_athlete_highlight h "
                     + "INNER JOIN reg_athlete a ON a.id = h.athlete_id "
                     + "WHERE h.status = 'published' "
@@ -385,6 +420,10 @@ public class PublicService {
           item.put("cover_url", h.get("cover_url"));
           item.put("summary", h.get("summary"));
           item.put("published_at", h.get("published_at"));
+          item.put("profile_title", h.get("profile_title"));
+          item.put("profile_summary", h.get("profile_summary"));
+          item.put("hero_image_url", h.get("hero_image_url"));
+          item.put("social_url", h.get("social_url"));
           firstByAthlete.put(aid, item);
           if (firstByAthlete.size() >= limit) break;
         }
