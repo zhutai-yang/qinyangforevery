@@ -7,17 +7,17 @@
     "node": ">=18"
   },
   "scripts": {
-    "build:portal": "npx vite build --config client/vite.portal.config.js",
-    "build:admin": "npx vite build --config client/vite.admin.config.js",
+    "build:portal": "vite build --config client/vite.portal.config.js",
+    "build:admin": "vite build --config client/vite.admin.config.js",
     "build:all": "npm run build:portal && npm run build:admin",
-    "dev:portal": "npx vite --config client/vite.portal.config.js",
-    "dev:admin": "npx vite --config client/vite.admin.config.js",
-    "preview:portal": "npx vite preview --config client/vite.portal.config.js --port 4173",
-    "preview:admin": "npx vite preview --config client/vite.admin.config.js --port 4174",
-    "test": "npx vitest run",
-    "test:watch": "npx vitest",
-    "lint": "npx eslint \"client/admin/**/*.vue\" \"client/admin/**/*.js\" \"client/portal/**/*.vue\" \"client/portal/**/*.js\" \"client/shared/**/*.js\"",
-    "lint:fix": "npx eslint \"client/admin/**/*.vue\" \"client/admin/**/*.js\" \"client/portal/**/*.vue\" \"client/portal/**/*.js\" \"client/shared/**/*.js\" --fix"
+    "dev:portal": "vite --config client/vite.portal.config.js",
+    "dev:admin": "vite --config client/vite.admin.config.js",
+    "preview:portal": "vite preview --config client/vite.portal.config.js --port 4173",
+    "preview:admin": "vite preview --config client/vite.admin.config.js --port 4174",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint \"client/admin/**/*.vue\" \"client/admin/**/*.js\" \"client/portal/**/*.vue\" \"client/portal/**/*.js\" \"client/shared/**/*.js\"",
+    "lint:fix": "eslint \"client/admin/**/*.vue\" \"client/admin/**/*.js\" \"client/portal/**/*.vue\" \"client/portal/**/*.js\" \"client/shared/**/*.js\" --fix"
   },
   "dependencies": {
     "axios": "^1.6.2",
